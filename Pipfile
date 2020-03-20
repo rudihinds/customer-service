@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+pylint = "*"
+behave = "*"
+flake8 = "*"
+
+[packages]
+flask = "*"
+flask-swagger-ui = "*"
+pyaml = "*"
+alembic = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
+schema = "*"
+
+[requires]
+python_version = "3.7"

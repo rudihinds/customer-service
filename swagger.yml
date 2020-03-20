@@ -1,0 +1,91 @@
+---
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: Customer Service API
+  description: An API to get the customer details
+
+host: localhost:5000
+schemes:
+  - http
+
+paths:
+  /customers/{customerId}:
+    get:
+      summary: Get customer by customerId
+      description: Returns the customer details
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Customer identification number
+          type: string
+          x-example: "12345"
+      responses:
+        200:
+          description: Customer details found
+          schema:
+            $ref: "#/definitions/Customer"
+        404:
+          description: Customer details not found
+          schema:
+            $ref: "#/definitions/Message"
+  /customers/:
+    post:
+      summary: Create a new customer
+      description: Creates a new customer and returns save customer
+      produces:
+        - application/json
+      parameters:
+        - name: firstName
+          in: body
+          required: true
+          description: The customer's first name
+          type: string
+          minLength: 1
+          maxLength: 200
+          x-example: "Joe"
+        - name: surname
+          in: body
+          required: true
+          description: The customer's surname
+          type: string
+          minLength: 1
+          maxLength: 200
+          x-example: "Bloggs"
+      responses:
+        200:
+          description: Customer details found
+          schema:
+            $ref: "#/definitions/Customer"
+        400:
+          description: Bad payload send
+          schema:
+            $ref: "#/definitions/Message"
+        415:
+          description: Bad Content-Type
+          schema:
+            $ref: "#/definitions/Message"
+
+definitions:
+  Customer:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Customer Id
+      firstName:
+        type: string
+        description: Customer First Name
+      surname:
+        type: string
+        description: Customer Surname
+  Message:
+    type: object
+    properties:
+      message:
+        type: string
+        description: The message

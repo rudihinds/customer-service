@@ -1,0 +1,2 @@
+class CustomerNotFound(RuntimeError):
+    pass
