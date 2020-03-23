@@ -1,5 +1,8 @@
 def github_id = "CHANGE_ME"
 
+// DO NOT CHANGE VARIABLES BELOW THIS LINE
+
+def namespace = github_id.toLowerCase()
 def image_name = "sepractices/{github_id}-customer-service"
 def cluster_name = "prod-ak-k8s-cluster"
 def git_repository = "https://github.com/${github_id}/customer-service.git"
@@ -93,8 +96,8 @@ podTemplate(name: "${github_id}-customer-service-build", label: label, yaml: bui
               --exec-arg="${cluster_name}"
           """
           sh "yq w -i kubernetes/deployment.yml 'spec.template.spec.containers[0].image' ${image_name}"
-          sh "kubectl create namespace ${github_id} || true"
-          sh "kubectl apply -n ${github_id} -f kubernetes/"
+          sh "kubectl create namespace ${namespace} || true"
+          sh "kubectl apply -n ${namespace} -f kubernetes/"
         }
       }
     }
