@@ -3,7 +3,7 @@ def github_id = "CHANGE_ME"
 // DO NOT CHANGE VARIABLES BELOW THIS LINE
 
 def namespace = github_id.toLowerCase()
-def image_name = "sepractices/{github_id}-customer-service"
+def image_name = "sepractices/${github_id}-customer-service"
 def cluster_name = "prod-ak-k8s-cluster"
 def git_repository = "https://github.com/${github_id}/customer-service.git"
 
@@ -89,7 +89,8 @@ podTemplate(name: "${github_id}-customer-service-build", label: label, yaml: bui
                       --server=$KUBERNETES_SERVER \
                       --certificate-authority=$KUBERNETES_CA
           '''
-          sh """kubectl config \
+          sh """
+            kubectl config \
               set-credentials aws \
               --exec-arg=token \
               --exec-arg=-i \
