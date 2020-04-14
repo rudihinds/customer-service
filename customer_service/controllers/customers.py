@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import jsonify, Blueprint, current_app, request
-from schema import Schema, SchemaError, And
+from schema import Schema, SchemaError, And, Use
 
 from customer_service.model import commands
 from customer_service.model.errors import CustomerNotFound
@@ -11,6 +11,24 @@ customers = Blueprint('customers', __name__, url_prefix='/customers/')
 CREATE_PAYLOAD_SCHEMA = Schema({"firstName": And(str, len),
                                 "surname": And(str, len)})
 
+UPDATE_PAYLOAD_SCHEMA = Schema({"customer_id": And(int),
+                                "surname": And(str, len)})
+
+@customers.route('/', methods=['PUT'])
+def update_customer():
+    customer_repository = current_app.customer_repository
+    
+    body = request.get_json()
+    
+    UPDATE_PAYLOAD_SCHEMA.validate(body)
+    
+    commands.update_customer(
+        customer_id=body['customer_id'],
+        surname=body['surname'],
+        customer_repository=customer_repository)
+    
+    return '', HTTPStatus.OK 
+    # customer_repository = current_app.customer_repository
 
 @customers.route('/<string:customer_id>', methods=['GET'])
 def get_customer(customer_id):

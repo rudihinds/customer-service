@@ -1,10 +1,22 @@
 from unittest.mock import patch
-
+from http import HTTPStatus
 import pytest
 
 from customer_service.model.customer import Customer
 from customer_service.model.errors import CustomerNotFound
 
+@patch('customer_service.model.commands.update_customer')
+def test_to_update_customer(update_customer, web_client, customer_repository):
+    request_body = dict(customer_id=1222, surname='Humbl')
+    response = web_client.put('/customers/', json=request_body)
+    
+    update_customer.assert_called_with(
+        customer_id=1222,
+        surname='Humbl',
+        customer_repository=customer_repository)
+    assert response.status_code == HTTPStatus.OK
+    
+    
 
 @patch('customer_service.model.commands.get_customer')
 def test_get_customer_id(get_customer, web_client, customer_repository):
@@ -74,3 +86,15 @@ def test_create_customer_with_bad_context_type(web_client):
     response = web_client.post('/customers/', data='not json')
     assert response.status_code == 415
     assert response.get_json()['message'] == 'Request must be application/json'
+    
+@pytest.mark.parametrize(
+    'bad_payload',
+    [dict(),
+     dict(customer_id='', surname='Bloggs'),
+     dict(customer_id=1222, surname=''),
+     dict(customer_id='1222', surname='Bloggs'),
+     dict(customer_id=1222, surname=222),
+     dict(customer_id=1222, surname='Bloggs', unknown="I'm unknown")])
+def test_update_customer_with_bad_payload(web_client, bad_payload):
+    response = web_client.put('/customers/', json=bad_payload)
+    assert response.status_code == HTTPStatus.BAD_REQUEST
