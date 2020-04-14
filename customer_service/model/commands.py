@@ -11,6 +11,7 @@ def create_customer(first_name, surname, customer_repository):
 
     return customer.customer_id
 
+
 def update_customer(customer_id, surname, customer_repository):
     customer = customer_repository.fetch_by_id(customer_id)
     customer.surname = surname
